@@ -81,7 +81,7 @@ def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_load
             
             current_features_flat = rfeatures[-1].cpu().numpy().reshape(image.shape[0], -1)
             all_features_to_return.append(current_features_flat)
-            all_anomaly_types_to_return.extend(anomaly_type_batch) # リストのままextend
+            #all_anomaly_types_to_return.extend(anomaly_type_batch) # リストのままextend
             all_gts_to_return.extend(label.cpu().numpy()) # labelは0/1のGTラベル
 
             
