@@ -287,19 +287,29 @@ def load_mc_reference_features(root_dir: str, class_names, device: torch.device,
         layer1_refs = np.load(os.path.join(root_dir, class_name, 'layer1.npy'))
         layer2_refs = np.load(os.path.join(root_dir, class_name, 'layer2.npy'))
         layer3_refs = np.load(os.path.join(root_dir, class_name, 'layer3.npy'))
+        layer1_refs_ada = np.load(os.path.join(root_dir, class_name, 'layer1_ada.npy'))
+        layer2_refs_ada = np.load(os.path.join(root_dir, class_name, 'layer2_ada.npy'))
+        layer3_refs_ada = np.load(os.path.join(root_dir, class_name, 'layer3_ada.npy'))        
         
         layer1_refs = torch.from_numpy(layer1_refs).to(device)
         layer2_refs = torch.from_numpy(layer2_refs).to(device)
         layer3_refs = torch.from_numpy(layer3_refs).to(device)
-        
+        layer1_refs_ada = torch.from_numpy(layer1_refs_ada).to(device)
+        layer2_refs_ada = torch.from_numpy(layer2_refs_ada).to(device)
+        layer3_refs_ada = torch.from_numpy(layer3_refs_ada).to(device)        
         K1 = (layer1_refs.shape[0] // TOTAL_SHOT) * num_shot
         layer1_refs = layer1_refs[:K1, :]
         K2 = (layer2_refs.shape[0] // TOTAL_SHOT) * num_shot
         layer2_refs = layer2_refs[:K2, :]
         K3 = (layer3_refs.shape[0] // TOTAL_SHOT) * num_shot
         layer3_refs = layer3_refs[:K3, :]
-        
-        refs[class_name] = (layer1_refs, layer2_refs, layer3_refs)
+        K1_ada = (layer1_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
+        layer1_refs_ada = layer1_refs[:K1_ada, :]
+        K2_ada = (layer2_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
+        layer2_refs_ada = layer2_refs[:K2_ada, :]
+        K3_ada = (layer3_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
+        layer3_refs_ada = layer3_refs[:K3_ada, :]       
+        refs[class_name] = (layer1_refs, layer2_refs, layer3_refs,layer1_refs_ada, layer2_refs_ada, layer3_refs_ada)
     
     return refs
                     
