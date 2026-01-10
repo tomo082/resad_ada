@@ -120,7 +120,8 @@ def get_mc_reference_features(encoder,adapters, root, class_names, device, num_s
                 features[l] = features[l].permute(0, 2, 3, 1).reshape(-1, c)
             for l in range(len(features_ad)):
                 bs, c, h, w = features_ad[l].shape
-                features[l+3] = features_ad[l].permute(0, 2, 3, 1).reshape(-1, c)            
+                feat_formatted = features_ad[l].permute(0, 2, 3, 1).reshape(-1, c)
+                features.append(feat_formatted)
             reference_features[class_name] = features
     return reference_features
 
