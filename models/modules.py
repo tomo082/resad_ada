@@ -125,12 +125,23 @@ class MultiScaleConv(nn.Module):
         self.l2_proj = ConvBnAct(channels[1], channels[1])
         self.l3_proj = ConvBnAct(channels[2], channels[2])
         
-    def forward(self, layer1_x, layer2_x, layer3_x):
-        out1 = self.l1_proj(layer1_x)
-        out2 = self.l2_proj(layer2_x)
-        out3 = self.l3_proj(layer3_x)
+    def forward(self, *inputs):
+        outs = []
+        for i, x in enumerate(inputs):
+            # レイヤーIDを 0, 1, 2 の繰り返しとして扱う
+            # i=0,3 -> 0 (l1_proj)
+            # i=1,4 -> 1 (l2_proj)
+            # i=2,5 -> 2 (l3_proj)
+            layer_idx = i % 3
+            
+            if layer_idx == 0:
+                outs.append(self.l1_proj(x))
+            elif layer_idx == 1:
+                outs.append(self.l2_proj(x))
+            elif layer_idx == 2:
+                outs.append(self.l3_proj(x))
         
-        return out1, out2, out3
+        return tuple(outs)
     
     
 class MultiScaleBasicBlock(nn.Module):
