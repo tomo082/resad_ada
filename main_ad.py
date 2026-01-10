@@ -167,7 +167,6 @@ def main(args):
                 m = F.interpolate(masks, size=(h, w), mode='nearest').squeeze(1)
                 lvl_masks.append(m)
             rfeatures_t = [rfeature.detach().clone() for rfeature in rfeatures]
-            rfeatures_ad_t = [rfeature.detach().clone() for rfeature in rfeatures_ad] #追加1/8
 
 
             loss_vq = vq_ops(rfeatures, lvl_masks, train=True)
@@ -191,11 +190,9 @@ def main(args):
                 loss_i, _, _ = calculate_log_barrier_bi_occ_loss(e, m, t)
                 loss += loss_i
 
-            optimizer_ada.zero_grad() #追加1/8
             optimizer0.zero_grad()
             loss.backward()
             optimizer0.step()
-            optimizer_ada.step() #追加1/8
 
             train_loss_total += loss.item()
             total_num += 1
@@ -208,7 +205,6 @@ def main(args):
             total_num += num
         
         scheduler_vq.step()
-        scheduler_ada.step() #追加1/8
         scheduler0.step()
         scheduler1.step()
                
@@ -282,7 +278,6 @@ def main(args):
                 os.makedirs(args.checkpoint_path, exist_ok=True)
                 best_img_auc = img_auc
                 state_dict = {'vq_ops': vq_ops.state_dict(),
-                             'adapter_state_dict': [adapter.state_dict() for adapter in adapters], #追加1/8
                               'constraintor': constraintor.state_dict(),
                               'estimators': [estimator.state_dict() for estimator in estimators]}
                 torch.save(state_dict, os.path.join(args.checkpoint_path, f'{args.setting}_epoch_{epoch}_checkpoints.pth'))
