@@ -93,7 +93,7 @@ class VISA(Dataset):
         if self.train:
             label = self.class_to_idx[class_name]
         
-        return image, label, mask, class_name, anomaly_type
+        return image, label, mask, class_name
 
     def __len__(self):
         return len(self.image_paths)
