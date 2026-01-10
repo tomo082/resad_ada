@@ -39,7 +39,6 @@ MVTEC_TO_BRATS = {'seen': ['bottle', 'cable', 'capsule', 'carpet', 'grid',
                  'unseen': ['brain']}
 
 MVTEC_TO_MVTEC = {'seen': ['bottle', 'cable', 'capsule', 'carpet', 'grid',
-<<<<<<< HEAD
                             'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
                             'tile', 'toothbrush', 'transistor', 'wood', 'zipper'],
                   'unseen': ['bottle', 'cable', 'capsule', 'carpet', 'grid',
@@ -50,7 +49,6 @@ MVTECFEW_TO_MVTEC = {'seen': ['capsule','screw','transistor'],
                   'unseen': ['bottle', 'cable', 'capsule', 'carpet', 'grid',
                              'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
                              'tile', 'toothbrush', 'transistor', 'wood', 'zipper']}
-=======
 'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
 'tile', 'toothbrush', 'transistor', 'wood', 'zipper'],
 'unseen': ['bottle', 'cable', 'capsule', 'carpet', 'grid',
@@ -64,4 +62,3 @@ VISA_TO_VISA = {'seen': ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum',
 
 CAPSULES_TO_CAPSULES = {'seen': ['capsules'],
                  'unseen': ['capsules']}
->>>>>>> e7780db2677733306569789ec32baf99f1acd145
