@@ -142,7 +142,7 @@ def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_load
     return metrics
 
 
-def convert_to_anomaly_scores(logps_list, feature_levels=3, class_name=None, size=224):
+def convert_to_anomaly_scores(logps_list, feature_levels=6, class_name=None, size=224):#features_levels6に変更
     normal_map = [list() for _ in range(feature_levels)]
     for l in range(feature_levels):
         logps = torch.cat(logps_list[l], dim=0)  
