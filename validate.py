@@ -70,11 +70,6 @@ def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_load
                     features[i] = features[i].permute(0, 2, 1).reshape(b, c, 16, 16)
                 mfeatures = get_matched_ref_features(features, ref_features)
                 rfeatures = get_residual_features(features, mfeatures)
-
-            if args.residual=='False':
-                rfeatures = features
-            else:
-                rfeatures = rfeatures
             
             
              # --- UMAP可視化のために特徴量と異常タイプ名を収集 ---
