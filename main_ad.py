@@ -249,7 +249,7 @@ def main(args):
                 test_loader = DataLoader(
                     test_dataset, batch_size=1, shuffle=False, num_workers=8, drop_last=False
                 )
-                metrics = validate(args, encoder, vq_ops, constraintor, estimators, test_loader, test_ref_features[class_name], args.device, class_name)
+                metrics = validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_loader, test_ref_features[class_name], args.device, class_name)
                 img_auc, img_ap, img_f1_score, pix_auc, pix_ap, pix_f1_score, pix_aupro = metrics['scores']
                 
                 print("Epoch: {}, Class Name: {}, Image AUC | AP | F1_Score: {} | {} | {}, Pixel AUC | AP | F1_Score | AUPRO: {} | {} | {} | {}".format(
