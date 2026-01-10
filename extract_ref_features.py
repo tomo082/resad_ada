@@ -126,8 +126,14 @@ def main(args):
     decoders = [load_flow_model(args, feat_dim) for feat_dim in feat_dims]
     decoders = [decoder.to(args.device) for decoder in decoders]
     
-    if args.bgadweight_dir:
-        load_weights(encoder, decoders, args.bgadweight_dir)
+    adapters = nn.ModuleList([
+    nn.Conv2d(in_channels=feat_dim, out_channels=feat_dim, kernel_size=1, stride=1)
+    for feat_dim in feat_dims
+    ]).to(args.device) #追加1/8
+    
+    
+    #if args.bgadweight_dir:
+     #   load_weights(encoder, decoders, args.bgadweight_dir)
     if args.dataset in SETTINGS.keys():
         CLASS_NAMES = SETTINGS[args.dataset]
     else:
@@ -259,6 +265,8 @@ if __name__ == '__main__':
     parser.add_argument('--clamp_alpha', type=float, default=1.9)
     parser.add_argument('--pos_embed_dim', type=int, default=256)
     parser.add_argument('--device', type=str, default="cuda:0")
+    parser.add_argument('--bgad_weight_dir', type=str, default="none")  # 1/8追加
+
     args = parser.parse_args()
     main(args)
 >>>>>>> e7780db2677733306569789ec32baf99f1acd145
