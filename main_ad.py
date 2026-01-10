@@ -103,9 +103,7 @@ def main(args):
     nn.Conv2d(in_channels=feat_dim, out_channels=feat_dim, kernel_size=1, stride=1)
     for feat_dim in feat_dims
     ]).to(args.device) #追加1/8
-    params_ada = list(adapters[0].parameters()) #追加1/8
-    optimizer_ada = torch.optim.Adam(params_ada, lr=args.lr, weight_decay=0.0005) #追加1/8
-    scheduler_ada = torch.optim.lr_scheduler.MultiStepLR(optimizer_ada, milestones=[70, 90], gamma=0.1) #追加1/8
+    load_weights_ada(adapters,args.bgad_weight_dir)#1/10
 
     boundary_ops = BoundaryAverager(num_levels=args.feature_levels)
     vq_ops = MultiScaleVQ(num_embeddings=args.num_embeddings, channels=feat_dims).to(args.device)
