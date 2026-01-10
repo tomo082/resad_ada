@@ -119,7 +119,7 @@ def main(args):
     estimators = [load_flow_model(args, feat_dim) for feat_dim in feat_dims]
     estimators = [decoder.to(args.device) for decoder in estimators]
     params = list(estimators[0].parameters())
-    for l in range(1, args.feature_levels):
+    for l in range(1, args.feature_levels):#6に変更
         params += list(estimators[l].parameters())
     optimizer1 = torch.optim.Adam(params, lr=args.lr, weight_decay=0.0005)
     scheduler1 = torch.optim.lr_scheduler.MultiStepLR(optimizer1, milestones=[70, 90], gamma=0.1)
