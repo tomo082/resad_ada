@@ -148,7 +148,7 @@ def main(args):
             
             with torch.no_grad():
                 features = encoder(images)
-                features_ad = [adapters[i](images[i]) for i in range(len(images))]
+                features_ad = [adapters[i](features[i]) for i in range(len(features))]
         
             
             ref_features = get_mc_reference_features(encoder,adapters, args.train_dataset_dir, class_names, images.device, args.train_ref_shot)
