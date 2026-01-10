@@ -104,19 +104,19 @@ def main(args):
     for feat_dim in feat_dims
     ]).to(args.device) #追加1/8
     load_weights_ada(adapters,args.bgad_weight_dir)#1/10
+    feat_dims_es = feat_dims + feat_dims
 
     boundary_ops = BoundaryAverager(num_levels=args.feature_levels)
-    vq_ops = MultiScaleVQ(num_embeddings=args.num_embeddings, channels=feat_dims).to(args.device)
+    vq_ops = MultiScaleVQ(num_embeddings=args.num_embeddings, channels=feat_dims_es).to(args.device)
     optimizer_vq = torch.optim.Adam(vq_ops.parameters(), lr=args.lr, weight_decay=0.0005)
     scheduler_vq = torch.optim.lr_scheduler.MultiStepLR(optimizer_vq, milestones=[70, 90], gamma=0.1)
     
-    constraintor = MultiScaleConv(feat_dims).to(args.device)
+    constraintor = MultiScaleConv(feat_dims_es).to(args.device)
     # weight_decay is the l2 weight penalty lambda, weight_decay = lambda / 2
     optimizer0 = torch.optim.Adam(constraintor.parameters(), lr=args.lr, weight_decay=0.0005)
     scheduler0 = torch.optim.lr_scheduler.MultiStepLR(optimizer0, milestones=[70, 90], gamma=0.1)
     
     # Normflow decoder
-    feat_dims_es = feat_dims + feat_dims
     estimators = [load_flow_model(args, feat_dim) for feat_dim in feat_dims_es]
     estimators = [decoder.to(args.device) for decoder in estimators]
     params = list(estimators[0].parameters())
