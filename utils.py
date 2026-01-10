@@ -103,7 +103,7 @@ def get_random_normal_images(root, class_name, num_shot=4):
     return normal_paths
 
 
-def get_mc_reference_features(encoder, root, class_names, device, num_shot=4):
+def get_mc_reference_features(encoder,adapters, root, class_names, device, num_shot=4):
     """
     Get reference features for multiple classes.
     """
@@ -114,9 +114,13 @@ def get_mc_reference_features(encoder, root, class_names, device, num_shot=4):
         images = load_and_transform_vision_data(normal_paths, device)
         with torch.no_grad():
             features = encoder(images)
+            features_ad = [adapters[i](features[i]) for i in range(len(features))]
             for l in range(len(features)):
                 bs, c, h, w = features[l].shape
                 features[l] = features[l].permute(0, 2, 3, 1).reshape(-1, c)
+            for l in range(len(features_ad)):
+                bs, c, h, w = features_ad[l].shape
+                features[l+3] = features_ad[l].permute(0, 2, 3, 1).reshape(-1, c)            
             reference_features[class_name] = features
     return reference_features
 
