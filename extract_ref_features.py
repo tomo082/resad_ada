@@ -155,7 +155,8 @@ def main(args):
             layer1_features.append(patch_tokens[0])
             layer2_features.append(patch_tokens[1])
             layer3_features.append(patch_tokens[2]) 
-            patch_tokens_ada = [adapters[i](patch_tokens[i]) for i in range(len(patch_tokens))]
+            with torch.no_grad():
+                patch_tokens_ada = [adapters[i](patch_tokens[i]) for i in range(len(patch_tokens))]
             layer1_features_ada.append(patch_tokens_ada[0])
             layer2_features_ada.append(patch_tokens_ada[1])
             layer3_features_ada.append(patch_tokens_ada[2])            
