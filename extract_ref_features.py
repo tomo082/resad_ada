@@ -19,7 +19,7 @@ from datasets.mpdd import MPDD
 from datasets.mvtec_loco import MVTECLOCO
 from datasets.brats import BRATS
 from models.imagebind import ImageBindModel
-from utils import load_weights
+from utils import load_weights_ada
 
 class FEWSHOTDATA(Dataset):
     
@@ -130,6 +130,7 @@ def main(args):
     nn.Conv2d(in_channels=feat_dim, out_channels=feat_dim, kernel_size=1, stride=1)
     for feat_dim in feat_dims
     ]).to(args.device) #追加1/8
+    load_weights_ada(adapters,args.bgad_weight_dir)#1/10
     
     
     #if args.bgadweight_dir:
@@ -146,7 +147,7 @@ def main(args):
             train_dataset, batch_size=8, shuffle=False, num_workers=8, drop_last=False
         )
         layer1_features, layer2_features, layer3_features = [], [], []
-        
+        layer1_features_ada, layer2_features_ada, layer3_features_ada = [], [], []
         for batch in tqdm.tqdm(train_loader):
             images, _, _, _ = batch
             with torch.no_grad():
@@ -154,20 +155,36 @@ def main(args):
             layer1_features.append(patch_tokens[0])
             layer2_features.append(patch_tokens[1])
             layer3_features.append(patch_tokens[2]) 
+            patch_tokens_ada = [adapters[i](patch_tokens[i]) for i in range(len(patch_tokens))]
+            layer1_features_ada.append(patch_tokens_ada[0])
+            layer2_features_ada.append(patch_tokens_ada[1])
+            layer3_features_ada.append(patch_tokens_ada[2])            
         layer1_features = torch.cat(layer1_features, dim=0)
         layer2_features = torch.cat(layer2_features, dim=0)
         layer3_features = torch.cat(layer3_features, dim=0)
+        layer1_features_ada = torch.cat(layer1_features_ada, dim=0)
+        layer2_features_ada = torch.cat(layer2_features_ada, dim=0)
+        layer3_features_ada = torch.cat(layer3_features_ada, dim=0)        
         print(layer1_features.shape)
         print(layer2_features.shape)
         print(layer3_features.shape)
+        print(layer1_features_ada.shape)
+        print(layer2_features_ada.shape)
+        print(layer3_features_ada.shape)
         #修正10/26
         layer1_channels = layer1_features.shape[1]
         layer2_channels = layer2_features.shape[1]
         layer3_channels = layer3_features.shape[1]
-
+        layer1_channels_ada = layer1_features_ada.shape[1]
+        layer2_channels_ada = layer2_features_ada.shape[1]
+        layer3_channels_ada = layer3_features_ada.shape[1]
+        
         layer1_features = layer1_features.permute(0, 2, 3, 1).reshape(-1, layer1_channels)
         layer2_features = layer2_features.permute(0, 2, 3, 1).reshape(-1, layer2_channels)
         layer3_features = layer3_features.permute(0, 2, 3, 1).reshape(-1, layer3_channels)
+        layer1_features_ada = layer1_features_ada.permute(0, 2, 3, 1).reshape(-1, layer1_channels_ada)
+        layer2_features_ada = layer2_features_ada.permute(0, 2, 3, 1).reshape(-1, layer2_channels_ada)
+        layer3_features_ada = layer3_features_ada.permute(0, 2, 3, 1).reshape(-1, layer3_channels_ada)
         #修正終わり
         os.makedirs(os.path.join(args.save_dir, class_name), exist_ok=True)
         
@@ -177,7 +194,9 @@ def main(args):
         
         np.save(os.path.join(args.save_dir, class_name, 'layer2.npy'), layer2_features.cpu().numpy())
         np.save(os.path.join(args.save_dir, class_name, 'layer3.npy'), layer3_features.cpu().numpy())
-        
+        np.save(os.path.join(args.save_dir, class_name, 'layer1_ada.npy'), layer1_features_ada.cpu().numpy())
+        np.save(os.path.join(args.save_dir, class_name, 'layer2_ada.npy'), layer2_features_ada.cpu().numpy())
+        np.save(os.path.join(args.save_dir, class_name, 'layer3_ada.npy'), layer3_features_ada.cpu().numpy())       
 
 def main2(args):
     image_size = 224
