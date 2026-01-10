@@ -116,8 +116,8 @@ def main(args):
     scheduler0 = torch.optim.lr_scheduler.MultiStepLR(optimizer0, milestones=[70, 90], gamma=0.1)
     
     # Normflow decoder
-    feat_dims = feat_dims + feat_dims
-    estimators = [load_flow_model(args, feat_dim) for feat_dim in feat_dims]
+    feat_dims_es = feat_dims + feat_dims
+    estimators = [load_flow_model(args, feat_dim) for feat_dim in feat_dims_es]
     estimators = [decoder.to(args.device) for decoder in estimators]
     params = list(estimators[0].parameters())
     for l in range(1, args.feature_levels):#6に変更
