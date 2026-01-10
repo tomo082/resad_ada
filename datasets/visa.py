@@ -34,11 +34,11 @@ class VISA(Dataset):
         
         # load dataset
         if isinstance(self.class_name, str):
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_data(self.class_name)
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_data(self.class_name)
         elif self.class_name is None:  # load all classes
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_all_data()
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_all_data()
         else:
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_all_data(self.class_name)
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_all_data(self.class_name)
         
         # set transforms
         if normalize == "imagebind":
@@ -76,7 +76,7 @@ class VISA(Dataset):
                 8: 'pcb2', 9: 'pcb3', 10: 'pcb4', 11: 'pipe_fryum'}
 
     def __getitem__(self, idx):
-        image_path, label, mask, class_name = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx]
+        image_path, label, mask, class_name, anomaly_type = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx], self.anomaly_types[idx]
         
         image = Image.open(image_path).convert('RGB')
         image = self.transform(image)
@@ -93,7 +93,7 @@ class VISA(Dataset):
         if self.train:
             label = self.class_to_idx[class_name]
         
-        return image, label, mask, class_name
+        return image, label, mask, class_name, anomaly_type
 
     def __len__(self):
         return len(self.image_paths)
@@ -110,8 +110,9 @@ class VISA(Dataset):
             image_paths = [os.path.join(self.root, file_name) for file_name in image_paths]
             labels = [0] * len(image_paths)
             mask_paths = [None] * len(image_paths)
+            anomaly_types = ['good'] * len(image_paths)
         else:
-            image_paths, labels, mask_paths = [], [], []
+            image_paths, labels, mask_paths, anomaly_types = [], [], [], []
             
             test_data = class_data.loc[class_data['split'] == 'test']
             test_normal_data = test_data.loc[test_data['label'] == 'normal']
@@ -122,6 +123,7 @@ class VISA(Dataset):
             image_paths.extend(normal_image_paths)
             labels.extend([0] * len(normal_image_paths))
             mask_paths.extend([None] * len(normal_image_paths))
+            anomaly_types.extend(['good'] * len(normal_image_paths))
             
             anomaly_image_paths = test_anomaly_data['image'].to_list()
             anomaly_mask_paths = test_anomaly_data['mask'].to_list()
@@ -130,23 +132,26 @@ class VISA(Dataset):
             image_paths.extend(anomaly_image_paths)
             labels.extend([1] * len(anomaly_image_paths))
             mask_paths.extend(anomaly_mask_paths)
+            anomaly_types.extend(['anomaly'] * len(anomaly_image_paths))
 
         class_names = [class_name] * len(image_paths)
-        return image_paths, labels, mask_paths, class_names
+        return image_paths, labels, mask_paths, class_names, anomaly_types
     
     def _load_all_data(self, class_names=None):
         all_image_paths = []
         all_labels = []
         all_mask_paths = []
         all_class_names = []
+        all_anomaly_types = []
         CLASS_NAMES = class_names if class_names is not None else self.CLASS_NAMES
         for class_name in CLASS_NAMES:
-            image_paths, labels, mask_paths, class_names = self._load_data(class_name)
+            image_paths, labels, mask_paths, class_names, anomaly_types = self._load_data(class_name)
             all_image_paths.extend(image_paths)
             all_labels.extend(labels)
             all_mask_paths.extend(mask_paths)
             all_class_names.extend(class_names)
-        return all_image_paths, all_labels, all_mask_paths, all_class_names
+            all_anomaly_types.extend(anomaly_types)
+        return all_image_paths, all_labels, all_mask_paths, all_class_names, all_anomaly_types
 
     def update_class_to_idx(self, class_to_idx):
         for class_name in self.class_to_idx.keys():
@@ -177,11 +182,11 @@ class VISAANO(Dataset):
         
         # load dataset
         if isinstance(self.class_name, str):
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_data(self.class_name)
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_data(self.class_name)
         elif self.class_name is None:
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_all_data()
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_all_data()
         else:
-            self.image_paths, self.labels, self.mask_paths, self.class_names = self._load_all_data(self.class_name)
+            self.image_paths, self.labels, self.mask_paths, self.class_names, self.anomaly_types = self._load_all_data(self.class_name)
         
         if normalize == "imagebind":
             self.transform = T.Compose(  # for imagebind
@@ -218,7 +223,7 @@ class VISAANO(Dataset):
                 8: 'pcb2', 9: 'pcb3', 10: 'pcb4', 11: 'pipe_fryum'}
 
     def __getitem__(self, idx):
-        image_path, label, mask, class_name = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx]
+        image_path, label, mask, class_name, anomaly_type = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx], self.anomaly_types[idx]
         
         image = Image.open(image_path).convert('RGB')
         image = self.transform(image)
@@ -235,7 +240,7 @@ class VISAANO(Dataset):
         if self.train:
             label = self.class_to_idx[class_name]
         
-        return image, label, mask, class_name
+        return image, label, mask, class_name, anomaly_type
 
     def __len__(self):
         return len(self.image_paths)
@@ -245,7 +250,7 @@ class VISAANO(Dataset):
         csv_data = pandas.read_csv(split_csv_file)
         
         class_data = csv_data.loc[csv_data['object'] == class_name]
-        all_image_paths, all_labels, all_mask_paths = [], [], []
+        all_image_paths, all_labels, all_mask_paths, all_anomaly_types = [], [], [], []
         
         # train
         train_data = class_data.loc[class_data['split'] == 'train']
@@ -256,9 +261,10 @@ class VISAANO(Dataset):
         all_image_paths.extend(image_paths)
         all_labels.extend(labels)
         all_mask_paths.extend(mask_paths)
+        all_anomaly_types.extend(['good'] * len(image_paths))
         
         # test 
-        image_paths, labels, mask_paths = [], [], []
+        image_paths, labels, mask_paths, anomaly_types = [], [], [], []
         test_data = class_data.loc[class_data['split'] == 'test']
         test_normal_data = test_data.loc[test_data['label'] == 'normal']
         test_anomaly_data = test_data.loc[test_data['label'] == 'anomaly']
@@ -268,6 +274,7 @@ class VISAANO(Dataset):
         image_paths.extend(normal_image_paths)
         labels.extend([0] * len(normal_image_paths))
         mask_paths.extend([None] * len(normal_image_paths))
+        anomaly_types.extend(['good'] * len(normal_image_paths))
         
         anomaly_image_paths = test_anomaly_data['image'].to_list()
         anomaly_mask_paths = test_anomaly_data['mask'].to_list()
@@ -276,27 +283,31 @@ class VISAANO(Dataset):
         image_paths.extend(anomaly_image_paths)
         labels.extend([1] * len(anomaly_image_paths))
         mask_paths.extend(anomaly_mask_paths)
+        anomaly_types.extend(['anomaly'] * len(anomaly_image_paths))
         
         all_image_paths.extend(image_paths)
         all_labels.extend(labels)
         all_mask_paths.extend(mask_paths)
+        all_anomaly_types.extend(anomaly_types)
 
         class_names = [class_name] * len(all_image_paths)
-        return all_image_paths, all_labels, all_mask_paths, class_names
+        return all_image_paths, all_labels, all_mask_paths, class_names, all_anomaly_types
     
     def _load_all_data(self, class_names=None):
         all_image_paths = []
         all_labels = []
         all_mask_paths = []
         all_class_names = []
+        all_anomaly_types = []
         CLASS_NAMES = class_names if class_names is not None else self.CLASS_NAMES
         for class_name in CLASS_NAMES:
-            image_paths, labels, mask_paths, class_names = self._load_data(class_name)
+            image_paths, labels, mask_paths, class_names, anomaly_types = self._load_data(class_name)
             all_image_paths.extend(image_paths)
             all_labels.extend(labels)
             all_mask_paths.extend(mask_paths)
             all_class_names.extend(class_names)
-        return all_image_paths, all_labels, all_mask_paths, all_class_names
+            all_anomaly_types.extend(anomaly_types)
+        return all_image_paths, all_labels, all_mask_paths, all_class_names, all_anomaly_types
 
     def update_class_to_idx(self, class_to_idx):
         for class_name in self.class_to_idx.keys():
