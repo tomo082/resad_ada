@@ -112,7 +112,7 @@ class MVTECANO(Dataset):
         image_path, label, mask_path, class_name,anomaly_type = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx],self.anomaly_types[idx]
         img, label, mask = self._load_image_and_mask(image_path, label, mask_path)
         
-        return img, label, mask, class_name,anomaly_type
+        return img, label, mask, class_name
     
     def _load_image_and_mask(self, image_path, label, mask_path):
         img = Image.open(image_path).convert('RGB')
@@ -248,7 +248,7 @@ class MVTEC(Dataset):
         image_path, label, mask_path, class_name,anomaly_type = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx], self.anomaly_types[idx] # anomaly_type を追加
         img, label, mask = self._load_image_and_mask(image_path, label, mask_path)
         
-        return img, label, mask, class_name,anomaly_type # anomaly_type を返す
+        return img, label, mask, class_name
     
     def _load_image_and_mask(self, image_path, label, mask_path):
         img = Image.open(image_path).convert('RGB')
