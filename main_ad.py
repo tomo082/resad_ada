@@ -305,11 +305,11 @@ def load_mc_reference_features(root_dir: str, class_names, device: torch.device,
         K3 = (layer3_refs.shape[0] // TOTAL_SHOT) * num_shot
         layer3_refs = layer3_refs[:K3, :]
         K1_ada = (layer1_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
-        layer1_refs_ada = layer1_refs[:K1_ada, :]
+        layer1_refs_ada = layer1_refs_ada[:K1_ada, :]
         K2_ada = (layer2_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
-        layer2_refs_ada = layer2_refs[:K2_ada, :]
+        layer2_refs_ada = layer2_refs_ada[:K2_ada, :]
         K3_ada = (layer3_refs_ada.shape[0] // TOTAL_SHOT) * num_shot
-        layer3_refs_ada = layer3_refs[:K3_ada, :]       
+        layer3_refs_ada = layer3_refs_ada[:K3_ada, :]       
         refs[class_name] = (layer1_refs, layer2_refs, layer3_refs,layer1_refs_ada, layer2_refs_ada, layer3_refs_ada)
     
     return refs
