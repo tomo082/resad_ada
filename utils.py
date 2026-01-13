@@ -328,12 +328,59 @@ def load_weights(encoder, decoders, filename):
     else:
         print("  [ERROR] 'decoder_state_dict' not found.")
         
-def load_weights_ada(adapters, filename):
-    #path = os.path.join(WEIGHT_DIR, filename)
-    state = torch.load(filename)
-    #encoder.load_state_dict(state['encoder_state_dict'], strict=False)
+#def load_weights_ada(adapters, filename):
+ #   #path = os.path.join(WEIGHT_DIR, filename)
+  #  state = torch.load(filename)
+   # #encoder.load_state_dict(state['encoder_state_dict'], strict=False)
     #decoders = [decoder.load_state_dict(state, strict=False) for decoder, state in zip(decoders, state['decoder_state_dict'])]
-    for adapter, adapter_state in zip(adapters, state['adapter_state_dict']):
-        adapter.load_state_dict(adapter_state, strict=False)
-    print('Loading weights from {}'.format(filename))
+    #for adapter, adapter_state in zip(adapters, state['adapter_state_dict']):
+     #   adapter.load_state_dict(adapter_state, strict=False)
+    #print('Loading weights from {}'.format(filename))
+# utils.py の既存の load_weights_ada を以下に置き換えてください
 
+def load_weights_ada(adapters, filename):
+    # CPUでロードして安全性を確保
+    state = torch.load(filename, map_location='cpu')
+    print(f'Loading adapters from {filename}')
+
+    # 保存されているデータがリスト形式かチェック
+    if 'adapter_state_dict' not in state:
+        print(f"  [ERROR] 'adapter_state_dict' key not found in {filename}")
+        return
+
+    adapter_weights_list = state['adapter_state_dict']
+    
+    # 保存されている数と、モデルのアダプター数が合っているか確認
+    if len(adapters) != len(adapter_weights_list):
+        print(f"  [WARNING] Mismatch in number of adapters: Model has {len(adapters)}, Checkpoint has {len(adapter_weights_list)}")
+
+    print("--- Adapter Load Report ---")
+    for i, (adapter, adapter_state) in enumerate(zip(adapters, adapter_weights_list)):
+        # strict=False にして、戻り値を受け取る
+        load_result = adapter.load_state_dict(adapter_state, strict=False)
+        
+        missing = load_result.missing_keys
+        unexpected = load_result.unexpected_keys
+        
+        # 検証1: キーの不一致がないか
+        status_msg = "OK"
+        if len(missing) > 0 or len(unexpected) > 0:
+            status_msg = f"WARNING (Missing: {len(missing)}, Unexpected: {len(unexpected)})"
+        
+        # 検証2: 重みが空っぽ（全て0）や異常値でないか、平均値を見てみる
+        # Conv2dなどの重みパラメータを一つ取り出して確認
+        param_stats = ""
+        for name, param in adapter.named_parameters():
+            if param.requires_grad:
+                # 重みの平均値と標準偏差を表示して、値が入っているか確認
+                param_stats = f" | {name}: mean={param.data.mean().item():.4f}, std={param.data.std().item():.4f}"
+                break # 最初のパラメータだけで十分
+
+        print(f"  Adapter {i}: [{status_msg}]{param_stats}")
+
+        if len(missing) > 0:
+            print(f"    - Missing keys: {missing}")
+        if len(unexpected) > 0:
+            print(f"    - Unexpected keys: {unexpected}")
+
+    print("---------------------------")
