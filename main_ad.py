@@ -128,7 +128,6 @@ def main(args):
     best_img_auc = 0
     N_batch = 8192
     for epoch in range(args.epochs):
-        adapters.train() #追加1/8
         vq_ops.train()
         constraintor.train()
         for estimator in estimators:
