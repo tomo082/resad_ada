@@ -121,25 +121,23 @@ class MultiScaleConv(nn.Module):
                  channels: Sequence[int] = (64, 128, 256)):
         super().__init__()
 
-        self.l1_proj = ConvBnAct(channels[0], channels[0])
-        self.l2_proj = ConvBnAct(channels[1], channels[1])
-        self.l3_proj = ConvBnAct(channels[2], channels[2])
+        # 変更点: 引数 channels の要素数分だけ ConvBnAct 層を作成し、ModuleList で管理します。
+        # これにより、channels が6要素 (元3つ + アダプター3つ) であれば、6つの独立した層が作られます。
+        self.projs = nn.ModuleList([
+            ConvBnAct(c, c) for c in channels
+        ])
         
     def forward(self, *inputs):
         outs = []
         for i, x in enumerate(inputs):
-            # レイヤーIDを 0, 1, 2 の繰り返しとして扱う
-            # i=0,3 -> 0 (l1_proj)
-            # i=1,4 -> 1 (l2_proj)
-            # i=2,5 -> 2 (l3_proj)
-            layer_idx = i % 3
-            
-            if layer_idx == 0:
-                outs.append(self.l1_proj(x))
-            elif layer_idx == 1:
-                outs.append(self.l2_proj(x))
-            elif layer_idx == 2:
-                outs.append(self.l3_proj(x))
+            # 入力のインデックスに対応する層 (self.projs[i]) を適用します。
+            # これにより、各特徴量が専用の層で処理されます。
+            if i < len(self.projs):
+                outs.append(self.projs[i](x))
+            else:
+                # 万が一、定義された層よりも多い入力が来た場合の安全策として
+                # 剰余を使って層を使い回す（またはエラーにする）処理を入れておきます。
+                outs.append(self.projs[i % len(self.projs)](x))
         
         return tuple(outs)
     
