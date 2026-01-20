@@ -154,8 +154,8 @@ def main(args):
         
             
             ref_features = get_mc_reference_features(encoder,adapters, args.train_dataset_dir, class_names, images.device, args.train_ref_shot)
-            mfeatures = get_mc_matched_ref_features(combined_features, class_names, ref_features)
-            rfeatures = get_residual_features(combined_features, mfeatures, pos_flag=True)
+            mfeatures = get_mc_matched_ref_features(features_ad, class_names, ref_features)
+            rfeatures = get_residual_features(features_ad, mfeatures, pos_flag=True)
 
 
             
