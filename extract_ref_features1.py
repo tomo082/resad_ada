@@ -1,3 +1,4 @@
+#adapterだけを用いるための特徴抽出
 import os
 import argparse
 import numpy as np
