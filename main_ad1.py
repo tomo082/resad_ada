@@ -334,7 +334,7 @@ if __name__ == "__main__":
     
     # flow parameters
     parser.add_argument('--flow_arch', type=str, default='conditional_flow_model')
-    parser.add_argument('--feature_levels', default=6, type=int)
+    parser.add_argument('--feature_levels', default=3, type=int)
     parser.add_argument('--coupling_layers', type=int, default=10)
     parser.add_argument('--clamp_alpha', type=float, default=1.9)
     parser.add_argument('--pos_embed_dim', type=int, default=256)
