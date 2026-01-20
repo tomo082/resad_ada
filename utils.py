@@ -125,6 +125,23 @@ def get_mc_reference_features(encoder,adapters, root, class_names, device, num_s
             reference_features[class_name] = features
     return reference_features
 
+def get_mc_reference_features_adonly(encoder,adapters, root, class_names, device, num_shot=4):
+    """
+    Get reference features for multiple classes.
+    """
+    reference_features = {}
+    class_names = np.unique(class_names)
+    for class_name in class_names:
+        normal_paths = get_random_normal_images(root, class_name, num_shot)
+        images = load_and_transform_vision_data(normal_paths, device)
+        with torch.no_grad():
+            features = encoder(images)
+            features_ad = [adapters[i](features[i]) for i in range(len(features))]
+            for l in range(len(features)):
+                bs, c, h, w = features_ad[l].shape
+                features[l] = features_ad[l].permute(0, 2, 3, 1).reshape(-1, c)
+            reference_features[class_name] = features
+    return reference_features
 
 def load_and_transform_vision_data(image_paths, device):
     if image_paths is None:
