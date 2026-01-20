@@ -105,7 +105,7 @@ def main(args):
     for feat_dim in feat_dims
     ]).to(args.device) #追加1/8
     load_weights_ada(adapters,args.bgad_weight_dir)#1/10
-    feat_dims_es = feat_dims + feat_dims
+    feat_dims_es = feat_dims 
 
     boundary_ops = BoundaryAverager(num_levels=args.feature_levels)
     vq_ops = MultiScaleVQ(num_embeddings=args.num_embeddings, channels=feat_dims_es).to(args.device)
