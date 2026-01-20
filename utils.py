@@ -401,3 +401,8 @@ def load_weights_ada(adapters, filename):
             print(f"    - Unexpected keys: {unexpected}")
 
     print("---------------------------")
+def load_weights_deco(, decoders, filename):#12/16追加
+    #path = os.path.join(WEIGHT_DIR, filename)
+    state = torch.load(filename)
+    decoders = [decoder.load_state_dict(state, strict=False) for decoder, state in zip(decoders, state['decoder_state_dict'])] 
+    print('Loading weights from {}'.format(filename))
