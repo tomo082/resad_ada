@@ -62,8 +62,8 @@ def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_load
                 features = encoder(image)
                 features_ad = [adapters[i](features[i]) for i in range(len(features))]
                 combined_features = features + features_ad    
-                mfeatures = get_matched_ref_features(combined_features, ref_features)
-                rfeatures = get_residual_features(combined_features, mfeatures, pos_flag=True)
+                mfeatures = get_matched_ref_features(features_ad, ref_features)
+                rfeatures = get_residual_features(features_ad, mfeatures, pos_flag=True)
             else:
                 features = encoder.encode_image_from_tensors(image)
                 for i in range(len(features)):
