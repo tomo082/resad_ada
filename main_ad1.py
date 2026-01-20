@@ -24,7 +24,7 @@ from datasets.capsules import CAPSULES, CAPSULESANO
 from models.fc_flow import load_flow_model
 from models.modules import MultiScaleConv
 from models.vq import MultiScaleVQ
-from utils import init_seeds, get_residual_features, get_mc_matched_ref_features, get_mc_reference_features
+from utils import init_seeds, get_residual_features, get_mc_matched_ref_features_adonly, get_mc_reference_features
 from utils import load_weights_ada
 from utils import BoundaryAverager
 from losses.loss import calculate_log_barrier_bi_occ_loss
@@ -153,7 +153,7 @@ def main(args):
                 combined_features = features + features_ad
         
             
-            ref_features = get_mc_reference_features(encoder,adapters, args.train_dataset_dir, class_names, images.device, args.train_ref_shot)
+            ref_features = get_mc_reference_features_adonly(encoder,adapters, args.train_dataset_dir, class_names, images.device, args.train_ref_shot)
             mfeatures = get_mc_matched_ref_features(features_ad, class_names, ref_features)
             rfeatures = get_residual_features(features_ad, mfeatures, pos_flag=True)
 
