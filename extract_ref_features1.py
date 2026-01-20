@@ -191,11 +191,11 @@ def main(args):
         os.makedirs(os.path.join(args.save_dir, class_name), exist_ok=True)
         
         print(f"Attempting to save layer1.npy for {class_name}...")
-        np.save(os.path.join(args.save_dir, class_name, 'layer1.npy'), layer1_features.cpu().numpy())
+        #np.save(os.path.join(args.save_dir, class_name, 'layer1.npy'), layer1_features.cpu().numpy())
         print(f"Successfully saved layer1.npy for {class_name}.")
         
-        np.save(os.path.join(args.save_dir, class_name, 'layer2.npy'), layer2_features.cpu().numpy())
-        np.save(os.path.join(args.save_dir, class_name, 'layer3.npy'), layer3_features.cpu().numpy())
+        #np.save(os.path.join(args.save_dir, class_name, 'layer2.npy'), layer2_features.cpu().numpy())
+        #np.save(os.path.join(args.save_dir, class_name, 'layer3.npy'), layer3_features.cpu().numpy())
         np.save(os.path.join(args.save_dir, class_name, 'layer1_ada.npy'), layer1_features_ada.cpu().numpy())
         np.save(os.path.join(args.save_dir, class_name, 'layer2_ada.npy'), layer2_features_ada.cpu().numpy())
         np.save(os.path.join(args.save_dir, class_name, 'layer3_ada.npy'), layer3_features_ada.cpu().numpy())       
