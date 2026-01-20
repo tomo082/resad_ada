@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 
 from train import train
-from validate import validate
+from validate1 import validate
 from datasets.mvtec import MVTEC, MVTECANO
 from datasets.visa import VISA, VISAANO
 from datasets.btad import BTAD
