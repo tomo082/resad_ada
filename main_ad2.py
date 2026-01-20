@@ -120,6 +120,7 @@ def main(args):
     # Normflow decoder
     estimators = [load_flow_model(args, feat_dim) for feat_dim in feat_dims_es]
     estimators = [decoder.to(args.device) for decoder in estimators]
+    load_weights_deco(estimators,args.bgad_weight_dir)
     params = list(estimators[0].parameters())
     for l in range(1, args.feature_levels):#6に変更
         params += list(estimators[l].parameters())
