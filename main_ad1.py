@@ -33,7 +33,7 @@ from classes import VISA_TO_MVTEC, MVTEC_TO_VISA, MVTEC_TO_BTAD, MVTEC_TO_MVTEC3
 from classes import MVTEC_TO_MPDD, MVTEC_TO_MVTECLOCO, MVTEC_TO_BRATS
 from classes import MVTEC_TO_MVTEC, VISA_TO_VISA
 from classes import CAPSULES_TO_CAPSULES
-from classes import SCREW_TO_SCRWE
+from classes import SCREW_TO_SCREW
 
 warnings.filterwarnings('ignore')
 
