@@ -19,6 +19,7 @@ from datasets.mpdd import MPDD
 from datasets.mvtec_loco import MVTECLOCO
 from datasets.brats import BRATS
 from datasets.capsules import CAPSULES, CAPSULESANO
+from datasets.screw import SCREW ,SCREWANO
 
 from models.fc_flow import load_flow_model
 from models.modules import MultiScaleConv
