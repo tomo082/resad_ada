@@ -26,7 +26,7 @@ IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
 
-class MVTECANO(Dataset):
+class SCREWANO(Dataset):
     """This dataset is used for cross-class training, where we use all the normal and abnomal
     samples for training. As we will not test on the training classes, using abnormal samples
     in test set is actually reasonable.
@@ -182,7 +182,7 @@ class MVTECANO(Dataset):
         return all_image_paths, all_labels, all_mask_paths, all_class_names, all_anomaly_types # anomaly_types も返す
 
 
-class MVTEC(Dataset):
+class SCREW(Dataset):
     
     CLASS_NAMES =  ['screw']
     def __init__(self, 
