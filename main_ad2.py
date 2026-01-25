@@ -35,6 +35,7 @@ from classes import MVTEC_TO_MPDD, MVTEC_TO_MVTECLOCO, MVTEC_TO_BRATS
 from classes import MVTEC_TO_MVTEC, VISA_TO_VISA
 from classes import CAPSULES_TO_CAPSULES
 from classes import SCREW_TO_SCREW
+from classes import CAPSULE_TO_CAPSULE
 
 
 warnings.filterwarnings('ignore')
