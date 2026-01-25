@@ -59,3 +59,5 @@ CAPSULES_TO_CAPSULES = {'seen': ['capsules'],
                  'unseen': ['capsules']}
 SCREW_TO_SCREW  = {'seen': ['screw'],
                  'unseen': ['screw']}
+CAPSULE_TO_CAPSULE = {'seen': ['capsule'],
+                 'unseen': ['capsule']}
