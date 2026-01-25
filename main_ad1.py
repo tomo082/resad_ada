@@ -21,6 +21,7 @@ from datasets.mvtec_loco import MVTECLOCO
 from datasets.brats import BRATS
 from datasets.capsules import CAPSULES, CAPSULESANO
 from datasets.screw import SCREW ,SCREWANO
+from datasets.capsule import CAPSULE, CAPSULEANO
 
 from models.fc_flow import load_flow_model
 from models.modules import MultiScaleConv
@@ -42,7 +43,7 @@ FIRST_STAGE_EPOCH = 10
 SETTINGS = {'visa_to_mvtec': VISA_TO_MVTEC, 'mvtec_to_visa': MVTEC_TO_VISA,
             'mvtec_to_btad': MVTEC_TO_BTAD, 'mvtec_to_mvtec3d': MVTEC_TO_MVTEC3D,
             'mvtec_to_mpdd': MVTEC_TO_MPDD, 'mvtec_to_mvtecloco': MVTEC_TO_MVTECLOCO,
-            'mvtec_to_brats': MVTEC_TO_BRATS,'mvtec_to_mvtec':MVTEC_TO_MVTEC, 'visa_to_visa':VISA_TO_VISA, 'capsules_to_capsules': CAPSULES_TO_CAPSULES,'screw_to_screw':SCREW_TO_SCREW}
+            'mvtec_to_brats': MVTEC_TO_BRATS,'mvtec_to_mvtec':MVTEC_TO_MVTEC, 'visa_to_visa':VISA_TO_VISA, 'capsules_to_capsules': CAPSULES_TO_CAPSULES,'screw_to_screw':SCREW_TO_SCREW,'capsule_to_capsule': CAPSULE_TO_CAPSULE}
 
 
 def main(args):
