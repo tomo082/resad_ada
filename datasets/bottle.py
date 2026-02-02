@@ -98,8 +98,8 @@ class BOTTLEANO(Dataset):
             T.CenterCrop(kwargs.get('msk_crp_size')),
             T.ToTensor()])
             
-        self.class_to_idx = {'screw': 0}
-        self.idx_to_class = {0: 'screw'}
+        self.class_to_idx = {'bottle': 0}
+        self.idx_to_class = {0: 'bottle'}
     
     def __getitem__(self, idx):
         image_path, label, mask_path, class_name,anomaly_type = self.image_paths[idx], self.labels[idx], self.mask_paths[idx], self.class_names[idx],self.anomaly_types[idx]
