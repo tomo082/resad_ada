@@ -14,7 +14,7 @@ from losses.utils import get_logp_a
 warnings.filterwarnings('ignore')
 
 
-def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_loader, ref_features, device, class_name):
+def validate(args, encoder, vq_ops, constraintor, estimators, test_loader, ref_features, device, class_name):
     vq_ops.eval()
     constraintor.eval()
     for estimator in estimators:  
@@ -59,10 +59,8 @@ def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_load
                 rfeatures = get_residual_features(combined_features, mfeatures, pos_flag=True)
             elif args.backbone == 'tf_efficientnet_b6':#10/26追加
                 features = encoder(image)
-                features_ad = [adapters[i](features[i]) for i in range(len(features))]
-                combined_features = features + features_ad    
-                mfeatures = get_matched_ref_features(combined_features, ref_features)
-                rfeatures = get_residual_features(combined_features, mfeatures, pos_flag=True)
+                mfeatures = get_matched_ref_features(features, ref_features)
+                rfeatures = get_residual_features(features, mfeatures, pos_flag=True)
             else:
                 features = encoder.encode_image_from_tensors(image)
                 for i in range(len(features)):
