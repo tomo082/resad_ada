@@ -15,7 +15,7 @@ from losses.utils import get_logp_a
 warnings.filterwarnings('ignore')
 
 
-def validate(args, encoder,adapters, vq_ops, constraintor, estimators, test_loader, ref_features, device, class_name):
+def validate2(args, encoder,adapters, vq_ops, constraintor, estimators, test_loader, ref_features, device, class_name):
     vq_ops.eval()
     constraintor.eval()
     for estimator in estimators:  
